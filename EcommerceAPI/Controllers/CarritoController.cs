@@ -78,6 +78,19 @@ namespace EcommerceAPI.Controllers
             return elementoDTO;
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> put(int id, [FromBody] ElementoCarritoDTO elementoCarritoDTO)
+        {
+            var elemento = await context.Carritos.Include(x=>x.Producto).FirstOrDefaultAsync(x => x.Id == id);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+            elemento = mapper.Map(elementoCarritoDTO, elemento);
+
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
 
 
     }
