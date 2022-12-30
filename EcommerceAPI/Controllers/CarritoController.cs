@@ -30,7 +30,7 @@ namespace EcommerceAPI.Controllers
             var elementoCarrito = mapper.Map<ElementoCarrito>(carrito);
 
 
-           await  context.Carritos.AddAsync(elementoCarrito);
+            await context.Carritos.AddAsync(elementoCarrito);
 
             context.SaveChangesAsync();
 
@@ -45,30 +45,40 @@ namespace EcommerceAPI.Controllers
         {
             var usuarioId = 1;
             var elementosCarrito = await context.Carritos.Where(elemento => elemento.UsuarioId == usuarioId)
-                .Include(x=>x.Producto)
+                .Include(x => x.Producto)
                 .ToListAsync();
 
             var elementoscarritoDTO = mapper.Map<List<ElementoCarritoDTO>>(elementosCarrito);
-            
 
-         //   context.Usuarios.Where(x => x.Id == usuarioId).Include(elementosCarrito;
             return elementoscarritoDTO;
-
-
         }
 
-      /*  [HttpGet]
+        [HttpDelete]
 
-        public async Task<ActionResult<List<CarritoDTO>>> Get(int usuarioId)
+        public async Task<ActionResult> Delete(int id)
         {
 
-            var ElementosCarrito = await context.Carritos.Where(elemento => elemento.UsuarioId == usuarioId).ToListAsync();
+            var elemento = await context.Carritos.FirstOrDefaultAsync(x => x.Id == id);
 
+            context.Carritos.Remove(elemento);
 
-            var CarritosDTO = mapper.Map<List<CarritoDTO>>(ElementosCarrito);
+            context.SaveChangesAsync();
+            return NoContent();
 
-            return CarritosDTO;
         }
-        */
+
+        [HttpGet ("{id:int}")]
+        public async Task<ActionResult<ElementoCarritoDTO>> getById (int id)
+            {
+
+            var elemento = await context.Carritos.Include(x=>x.Producto).FirstOrDefaultAsync(x => x.Id == id);
+
+          var  elementoDTO = mapper.Map<ElementoCarritoDTO>(elemento);
+
+            return elementoDTO;
+        }
+
+
+
     }
 }
