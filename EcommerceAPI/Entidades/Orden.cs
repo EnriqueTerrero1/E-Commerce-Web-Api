@@ -1,21 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EcommerceAPI.Entidades
+﻿namespace EcommerceAPI.Entidades
 {
     public class Orden
     {
 
-        [Key]
-        public string Id { get; set; }
-        public Usuario Usuario { get; set; }
-        public IEnumerable<ElementoCarrito> Carritos { get; set; }
-        public int Cantidad { get; set; }
+        public int Id { get; set; }
 
-        public string Direccion { get; set; }
+        public int UsuarioId { get; set; }
 
-        public string FechaCompra { get; set; }
-
-        public string Telefono { get; set; }
-
+      //  public List<OrdenDetalle> OrdenDetalles { get; set; }
+        //public List<ElementoCarrito>elementoCarritos { get; set; }
     }
 }

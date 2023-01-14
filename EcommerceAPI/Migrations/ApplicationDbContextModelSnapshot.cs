@@ -64,6 +64,35 @@ namespace EcommerceAPI.Migrations
                     b.ToTable("Carritos");
                 });
 
+            modelBuilder.Entity("EcommerceAPI.Entidades.OrdenDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdenId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("OrdenDetalle");
+                });
+
             modelBuilder.Entity("EcommerceAPI.Entidades.Producto", b =>
                 {
                     b.Property<int>("Id")
@@ -109,6 +138,10 @@ namespace EcommerceAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
@@ -122,8 +155,27 @@ namespace EcommerceAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EcommerceAPI.Entidades.Usuario", null)
+                    b.HasOne("EcommerceAPI.Entidades.Usuario", "usuario")
                         .WithMany("elementoCarritos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("usuario");
+                });
+
+            modelBuilder.Entity("EcommerceAPI.Entidades.OrdenDetalle", b =>
+                {
+                    b.HasOne("EcommerceAPI.Entidades.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcommerceAPI.Entidades.Usuario", null)
+                        .WithMany("ordens")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -153,6 +205,8 @@ namespace EcommerceAPI.Migrations
             modelBuilder.Entity("EcommerceAPI.Entidades.Usuario", b =>
                 {
                     b.Navigation("elementoCarritos");
+
+                    b.Navigation("ordens");
                 });
 #pragma warning restore 612, 618
         }

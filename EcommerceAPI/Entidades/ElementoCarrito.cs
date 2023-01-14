@@ -16,6 +16,9 @@ namespace EcommerceAPI.Entidades
 
 
         public Producto Producto { get; set; }
+        public Usuario usuario { get; set; }
+
+       
 
     }
 }

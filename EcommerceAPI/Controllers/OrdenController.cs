@@ -1,29 +1,45 @@
-﻿using EcommerceAPI.DTOS;
+﻿using AutoMapper;
 using EcommerceAPI.Entidades;
 using Microsoft.AspNetCore.Mvc;
-
-
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Controllers
-{
-    [ApiController]
-    [Route("api/Orden")]
+ {
     public class OrdenController : Controller
     {
-
-        public OrdenController(ApplicationDbContext context)
-        {
-            this.context = context;
-        }
-
-        public List<ElementoCarrito> carritos = new List<ElementoCarrito>();
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        /* [HttpPost]
-         public async Task<ActionResult> Create(CategoriaCreacionDTO categoriaCreacionDTO)
+        /*  public OrdenController(ApplicationDbContext context , IMapper mapper)
          {
 
-             context.carritos.
-         }*/
+             this.mapper = mapper;
+             this.context = context;
+         }
+
+         [HttpPost]
+        public async Task<ActionResult> Create()
+        {
+          var usuarioId = 1;
+            var elementosEnCarritos = await context.Carritos.Where(elemento => elemento.UsuarioId == usuarioId).Include(x => x.Producto).ToListAsync();
+
+            var ordenDTO = new Orden
+            {
+                UsuarioId = usuarioId,
+                elementoCarritos = elementosEnCarritos
+
+            };
+
+            await context.Ordenes.AddAsync(ordenDTO);
+
+            foreach (var elemento in elementosEnCarritos)
+            {
+
+
+            }
+            return NoContent();
+
+
+    }*/
     }
 }

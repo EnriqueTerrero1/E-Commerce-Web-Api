@@ -8,12 +8,15 @@ namespace EcommerceAPI.Utilidades
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Producto,ProductoDTO>();
             CreateMap<ProductoCreacionDTO,Producto>().ReverseMap();
             CreateMap<CategoriaCreacionDTO, Categoria>();
             CreateMap<Categoria,CategoriaDTO>();
-           CreateMap<ElementoCarrito,ElementoCarritoDTO>();
+           CreateMap<ElementoCarrito,ElementoCarritoDTO>().ReverseMap();
+            CreateMap<ProductoDTO, Producto>().ReverseMap();
             CreateMap<ElementoCarritoCreacionDTO, ElementoCarrito>();
+                
+
+           
         }
 
     }

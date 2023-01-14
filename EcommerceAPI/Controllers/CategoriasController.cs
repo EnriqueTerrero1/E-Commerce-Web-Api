@@ -3,6 +3,7 @@ using EcommerceAPI.DTOS;
 using EcommerceAPI.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PeliculasAPI.Utilidades;
 
 namespace EcommerceAPI.Controllers
 {
@@ -22,22 +23,39 @@ namespace EcommerceAPI.Controllers
         public  async Task <ActionResult> Create(CategoriaCreacionDTO categoriaCreacionDTO)
         {
 
-            var categoria = mapper.Map<Categoria>(categoriaCreacionDTO);
-
-            await context.Categorias.AddAsync(categoria);
-
-            context.SaveChangesAsync();
+          
+                if (!context.Categorias.Any(x => x.Nombre == categoriaCreacionDTO.Nombre))
+                {
+                    var categoria = mapper.Map<Categoria>(categoriaCreacionDTO);
+                    await context.Categorias.AddAsync(categoria);
+                    context.SaveChanges();
+                }
 
             return NoContent();
 
-           
+
         }
 
         [HttpGet]
 
-        public async Task <ActionResult<List<CategoriaDTO>>> GetAll()
+        public async Task<ActionResult<List<CategoriaDTO>>> GetAll()
         {
-            var categorias = await context.Categorias.ToListAsync();
+
+            var categorias =  await context.Categorias.ToListAsync();
+
+            var categoriasDTO = mapper.Map<List<CategoriaDTO>>(categorias);
+            return categoriasDTO;
+
+        }
+
+        [HttpGet("paginar")]
+
+        public async Task <ActionResult<List<CategoriaDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
+        {
+
+            var queryable = context.Categorias.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
+            var categorias = await queryable.OrderBy(x => x.Id).Paginar(paginacionDTO).ToListAsync();
 
             var categoriasDTO= mapper.Map<List<CategoriaDTO>>(categorias);
             return categoriasDTO;
@@ -48,9 +66,13 @@ namespace EcommerceAPI.Controllers
 
         public async Task <ActionResult>Delete(int id)
         {
-            var producto = await context.Categorias.FirstOrDefaultAsync(x => x.Id == id);
-             context.Categorias.Remove(producto);
+            var categoria = await context.Categorias.FirstOrDefaultAsync(x => x.Id == id);
+            if (categoria != null)
+            {
+                context.Categorias.Remove(categoria);
                 context.SaveChanges();
+
+            }
 
             return NoContent();
         }
@@ -73,7 +95,7 @@ namespace EcommerceAPI.Controllers
             }
             categoria = mapper.Map(categoriaCreacionDTO, categoria);
 
-            await context.SaveChangesAsync();
+             context.SaveChanges();
             return NoContent();
         }
     }

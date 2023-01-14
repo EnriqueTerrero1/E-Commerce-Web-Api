@@ -13,15 +13,19 @@ namespace EcommerceAPI.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly ILogger<ProductosController> logger;
 
-        public ProductosController(ApplicationDbContext context, IMapper mapper)
+        public ProductosController(ApplicationDbContext context, IMapper mapper, ILogger<ProductosController>logger)
         {
             this.context = context;
             this.mapper = mapper;
+            this.logger = logger;
         }
         [HttpGet]
         public async Task<ActionResult<List<ProductoDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
         {
+            logger.LogInformation("Product added"+ DateTime.UtcNow.ToString());
+
 
             var queryable = context.Productos.AsQueryable();
             await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
@@ -40,26 +44,15 @@ namespace EcommerceAPI.Controllers
 
 
         }
-        /*[HttpGet("paginar}")]
-        public async Task<ActionResult<List<ProductoDTO>>>ObtenerProductosPaginados()
-        {
-            var cantidadDeProductosAMostrar = 3;
-            
-            var auxiliar=0;
-            var productos = await context.productos.ToListAsync();
-           var cantidadTotalDePagina = productos.Count()/cantidadDeProductosAMostrar;
-
-            var productosAMostrar =  await context.productos.Take(cantidadDeProductosAMostrar).Skip(auxiliar).ToListAsync();
-            return productoDTO;
-
-
-        }*/
+       
         [HttpPost]
         public async Task<ActionResult> Create( [FromForm] ProductoCreacionDTO productoCreacionDTO)
         {
+           
             var producto = mapper.Map<Producto>(productoCreacionDTO);
+
             await context.Productos.AddAsync(producto);
-            context.SaveChangesAsync();
+            context.SaveChanges();
             return NoContent();
 
         }
@@ -87,7 +80,7 @@ namespace EcommerceAPI.Controllers
             }
             producto = mapper.Map(productoCreacionDTO, producto);
 
-            await context.SaveChangesAsync();
+             context.SaveChanges();
             return NoContent();
         }
 
@@ -96,13 +89,42 @@ namespace EcommerceAPI.Controllers
         public async Task<ActionResult<List<ProductoDTO>>> getProductByCategories(int CategoriaId)
         {
 
-            var productos = await context.Productos.Where(x => x.CategoriaId == CategoriaId).ToListAsync();
+           
+                var productos = await SearchProductByCategories(CategoriaId);
+           
 
-           var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
-
+                var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
+            
             return productosDTO;
 
         }
+
+
+        [HttpGet("buscar")]
+
+        public async Task<ActionResult<List<ProductoDTO>>> SearchProduct([FromBody] string elementoABuscar)
+        {
+
+            var elementosEncontrados = context.Productos.AnyAsync(x => x.ToString() == elementoABuscar);
+
+            var elementosEncontradosDTO=   mapper.Map< List<ProductoDTO>>(elementosEncontrados);
+
+            return elementosEncontradosDTO;
+
+
+        }
+        private async Task<List<Producto>> SearchProductByCategories (int categoriaId)
+        {
+
+           
+                var productos = await context.Productos.Where(x => x.CategoriaId == categoriaId).ToListAsync();
+
+                return productos;
+            
+
+            
+        }
+        
 
 
     }

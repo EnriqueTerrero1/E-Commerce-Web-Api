@@ -16,9 +16,10 @@ namespace EcommerceAPI
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
 
-       // public DbSet<Orden> ordens { get; set; }
+      // public DbSet<OrdenDetalle> OrdenDetalles { get; set; }
+      //  public DbSet<Orden> Ordenes { get; set; }
 
-       public DbSet<ElementoCarrito> Carritos { get; set; }
+        public DbSet<ElementoCarrito> Carritos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
 
 

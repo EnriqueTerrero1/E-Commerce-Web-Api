@@ -26,14 +26,14 @@ namespace EcommerceAPI.Controllers
         public async Task<ActionResult> Create([FromForm] ElementoCarritoCreacionDTO carrito)
         {
 
-
+           
             var elementoCarrito = mapper.Map<ElementoCarrito>(carrito);
 
 
             await context.Carritos.AddAsync(elementoCarrito);
 
-            context.SaveChangesAsync();
-
+            context.SaveChanges();
+            
             return NoContent();
 
 
@@ -43,26 +43,31 @@ namespace EcommerceAPI.Controllers
         public async Task<ActionResult<List<ElementoCarritoDTO>>> Get()
 
         {
-            var usuarioId = 1;
+            var usuarioId = 2;
             var elementosCarrito = await context.Carritos.Where(elemento => elemento.UsuarioId == usuarioId)
                 .Include(x => x.Producto)
                 .ToListAsync();
 
             var elementoscarritoDTO = mapper.Map<List<ElementoCarritoDTO>>(elementosCarrito);
-
+            
             return elementoscarritoDTO;
         }
 
-        [HttpDelete]
+        [HttpDelete ("{id:int}")]
+
 
         public async Task<ActionResult> Delete(int id)
         {
 
             var elemento = await context.Carritos.FirstOrDefaultAsync(x => x.Id == id);
 
-            context.Carritos.Remove(elemento);
+            if (elemento != null)
+            {
 
-            context.SaveChangesAsync();
+                context.Carritos.Remove(elemento);
+
+                context.SaveChanges();
+            }
             return NoContent();
 
         }
@@ -78,7 +83,7 @@ namespace EcommerceAPI.Controllers
             return elementoDTO;
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut ("{id:int}")]
         public async Task<ActionResult> put(int id, [FromBody] ElementoCarritoDTO elementoCarritoDTO)
         {
             var elemento = await context.Carritos.Include(x=>x.Producto).FirstOrDefaultAsync(x => x.Id == id);
@@ -88,7 +93,7 @@ namespace EcommerceAPI.Controllers
             }
             elemento = mapper.Map(elementoCarritoDTO, elemento);
 
-            await context.SaveChangesAsync();
+             context.SaveChanges();
             return NoContent();
         }
 
