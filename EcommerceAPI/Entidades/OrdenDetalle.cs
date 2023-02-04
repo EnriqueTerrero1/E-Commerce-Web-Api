@@ -13,6 +13,8 @@
         public int UsuarioId { get; set; }
 
         public int OrdenId { get; set; }
+
+        public Orden Orden { get; set; }
         public Producto Producto { get; set; }
 
     }

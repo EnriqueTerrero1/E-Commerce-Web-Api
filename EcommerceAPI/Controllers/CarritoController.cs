@@ -43,7 +43,7 @@ namespace EcommerceAPI.Controllers
         public async Task<ActionResult<List<ElementoCarritoDTO>>> Get()
 
         {
-            var usuarioId = 2;
+            var usuarioId = 9;
             var elementosCarrito = await context.Carritos.Where(elemento => elemento.UsuarioId == usuarioId)
                 .Include(x => x.Producto)
                 .ToListAsync();
@@ -84,15 +84,14 @@ namespace EcommerceAPI.Controllers
         }
 
         [HttpPut ("{id:int}")]
-        public async Task<ActionResult> put(int id, [FromBody] ElementoCarritoDTO elementoCarritoDTO)
+        public async Task<ActionResult> put(int id, [FromForm] ElementoCarritoCreacionDTO elementoCarritoCreacionDTO)
         {
             var elemento = await context.Carritos.Include(x=>x.Producto).FirstOrDefaultAsync(x => x.Id == id);
             if (elemento == null)
             {
                 return NotFound();
             }
-            elemento = mapper.Map(elementoCarritoDTO, elemento);
-
+            elemento = mapper.Map(elementoCarritoCreacionDTO, elemento);
              context.SaveChanges();
             return NoContent();
         }

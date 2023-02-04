@@ -14,8 +14,8 @@ namespace EcommerceAPI.Utilidades
            CreateMap<ElementoCarrito,ElementoCarritoDTO>().ReverseMap();
             CreateMap<ProductoDTO, Producto>().ReverseMap();
             CreateMap<ElementoCarritoCreacionDTO, ElementoCarrito>();
-                
-
+            CreateMap<ElementoCarrito, OrdenDetalle>().ForMember(OrdenDetalle=>OrdenDetalle.Id,o=>o.Ignore());
+            CreateMap<Orden, OrdenDTO>();
            
         }
 

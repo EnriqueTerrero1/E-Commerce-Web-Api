@@ -20,7 +20,8 @@ namespace EcommerceAPI.Entidades
         public string Marca { get; set; }
         public string Imagen { get; set; }
 
-        public List<ElementoCarrito> elementoCarritos { get; set; }
+        public Categoria Categoria { get; set; }
+       // public List<ElementoCarrito> elementoCarritos { get; set; }
 
 
     }

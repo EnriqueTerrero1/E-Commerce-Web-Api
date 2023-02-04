@@ -99,20 +99,27 @@ namespace EcommerceAPI.Controllers
 
         }
 
+        [HttpGet("buscar/{elementoABuscar}")]
 
-        [HttpGet("buscar")]
-
-        public async Task<ActionResult<List<ProductoDTO>>> SearchProduct([FromBody] string elementoABuscar)
+        public async Task<ActionResult<List<ProductoDTO>>> SearchProduct(string? elementoABuscar)
         {
 
-            var elementosEncontrados = context.Productos.AnyAsync(x => x.ToString() == elementoABuscar);
+            var elementosEncontrados = context.Productos.Where(x => x.Marca.Contains(elementoABuscar) || x.Descripcion.Contains(elementoABuscar));
 
-            var elementosEncontradosDTO=   mapper.Map< List<ProductoDTO>>(elementosEncontrados);
 
-            return elementosEncontradosDTO;
+                elementosEncontrados = context.Productos;
+           
+
+                var elementosEncontradosDTO = mapper.Map<List<ProductoDTO>>(elementosEncontrados);
+
+                return elementosEncontradosDTO;
 
 
         }
+
+        [HttpGet("buscar")]
+
+
         private async Task<List<Producto>> SearchProductByCategories (int categoriaId)
         {
 
